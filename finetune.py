@@ -135,7 +135,6 @@ tensorboard = TensorBoard(opts.savepath)
 checkpoint = ModelCheckpoint(
     os.path.join(opts.savepath, "model.hdf5"),
     monitor="val_acc",
-    verbose=True,
     save_best_only=True,
     mode="max")
 logger = CSVLogger(os.path.join(opts.savepath, "results.log"), append=True)
@@ -153,8 +152,7 @@ model.fit_generator(
     pickle_safe=True,
     callbacks=callbacks,
     validation_data=tstgenerator,
-    nb_val_samples=tstgenerator.n,
-    verbose=True
+    nb_val_samples=tstgenerator.n
 )
 
 model.save(os.path.join(opts.savepath, "model_last.hdf5"))
