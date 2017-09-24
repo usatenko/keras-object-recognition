@@ -17,7 +17,8 @@ from keras.layers import (
     merge,
 )
 from keras.regularizers import l2
-from keras.applications import resnet50
+from keras.applications import resnet50, InceptionV3
+
 
 def channel_axis():
     if K.image_dim_ordering() == 'tf':
@@ -181,6 +182,17 @@ def load_resnet50_imagenet(n_classes, weight_decay):
 
     return Model(input=base_model.input, output=x)
 
+def load_inception_imagenet(n_classes, weight_decay):
+    base_model = InceptionV3(weights='imagenet', include_top=False)
+
+    for layer in base_model.layers:
+        layer.trainable = False
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(n_classes, W_regularizer=l2(weight_decay), activation='relu')(x)
+    x = Activation('softmax')(x)
+    return Model(input=base_model.input, output=x)
+
 
 def load_model(net_type, input_shape, n_classes, depth, weight_decay, widen):
     if net_type == 'simple':
@@ -189,6 +201,8 @@ def load_model(net_type, input_shape, n_classes, depth, weight_decay, widen):
         model = load_resnet(input_shape, n_classes, depth, weight_decay, widen)
     elif net_type == 'resnet50imagenet':
         model = load_resnet50_imagenet(n_classes, weight_decay)
+    elif net_type == 'inceptionv3':
+        model = load_inception_imagenet(n_classes, weight_decay)
     else:
         raise("Invalid net_type.")
     return model

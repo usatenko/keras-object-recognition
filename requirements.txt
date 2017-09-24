@@ -1,8 +1,7 @@
-tensorflow==1.0.0
-tensorflow-gpu==1.0.0
-keras==1.2.1
-seaborn==0.7.1
-wget==3.2
+tensorflow
+keras
+seaborn
+wget
 matplotlib
 pillow
 h5py

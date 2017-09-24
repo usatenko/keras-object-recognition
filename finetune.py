@@ -4,8 +4,7 @@ import numpy as np
 from collections import Counter
 from models import load_model
 from keras import backend as K
-from keras.callbacks import (
-    LearningRateScheduler, TensorBoard, ModelCheckpoint, CSVLogger)
+from keras.callbacks import (LearningRateScheduler, TensorBoard, ModelCheckpoint, CSVLogger)
 from keras.datasets import cifar10, cifar100, mnist
 from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator, load_img
@@ -22,7 +21,7 @@ parser = ArgumentParser()
 parser.add_argument('--savepath', default='results')
 parser.add_argument('--dataset', default="dataset", help="dataset path")
 parser.add_argument('--img_dim', default=224, help="image dimension")
-parser.add_argument('--net_type', default='resnet50imagenet')
+parser.add_argument('--net_type', default='inceptionv3')
 parser.add_argument('--depth', type=int, default=16)
 parser.add_argument('--widen', type=int, default=1)
 parser.add_argument('--weight_decay', type=float, default=5e-4)
@@ -45,8 +44,9 @@ print(opts)
 
 # Get data for generator fit
 imh, imw, imc = opts.img_dim, opts.img_dim, 3
-n_classes = len(os.walk(os.path.join(opts.dataset, 'train')).__next__()[1])
-train_img_paths = list(glob.iglob(os.path.join(opts.dataset, 'train', '**', '*.jpg'), recursive=True))
+print next(os.walk(os.path.join(opts.dataset, 'train')))[1]
+n_classes = len(next(os.walk(os.path.join(opts.dataset, 'train')))[1])
+train_img_paths = list(glob.iglob(os.path.join(opts.dataset, 'train', '**', '*.jpg')))
 data = []
 for i in range(opts.generator_n_fit):
     new_data = load_img(train_img_paths[i], target_size=(imh, imw, imc))
